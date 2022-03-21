@@ -25,22 +25,20 @@
 
 
 
-import it.edu.liceococito.cocitoWeatherStation.ArchiveQuery;
-import it.edu.liceococito.cocitoWeatherStation.ArchiveQueryResult;
-import it.edu.liceococito.cocitoWeatherStation.DataType;
-import it.edu.liceococito.cocitoWeatherStation.NotADirectoryException;
-import it.edu.liceococito.cocitoWeatherStation.Page;
-import it.edu.liceococito.cocitoWeatherStation.PageList;
-import it.edu.liceococito.cocitoWeatherStation.Station;
-import it.edu.liceococito.cocitoWeatherStation.TimePeriod;
-import it.edu.liceococito.cocitoWeatherStation.Value;
+import it.edu.liceococito.cocitoWeatherStation.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
-public class Main {
+/**
+ * Example usage of API
+ */
+public class Main implements StationEventListener {
     public static void main(String[] args) throws NotADirectoryException, IOException, GitAPIException, ParseException {
+        Main m = new Main();
+    }
+    public Main() throws GitAPIException, NotADirectoryException, IOException, ParseException {
         Station station = new Station();
         station.udpate();
         ArchiveQuery aq = new ArchiveQuery();
@@ -50,15 +48,33 @@ public class Main {
         aq.setPageSize(10);
         ArchiveQueryResult aqs = station.query(aq);
         PageList pgl = aqs.getPageList();
-        for(int i = 0;i<pgl.size(); i++){
-            Page p = pgl.get(i);
-            for(int j = 0; j<p.size();j++){
-                Value v = p.get(j);
-                System.out.println(v.getValue()+" at "+v.getCreated());
+        for (Page p : pgl) {
+            for (Value v : p) {
+                System.out.println(v.getValue() + " at " + v.getCreated());
             }
         }
         System.out.println(station.getHardwareReport());
-        System.out.println("Latest temp: "+station.getLastMeasurements().getTemperature().getValue());
+        System.out.println("Latest temp: " + station.getLastMeasurements().getTemperature().getValue());
 
+
+        StatisticalReporter str = new StatisticalReporter(aqs);
+        StatisticalReportDataPamphlet pa = str.getReportPamphletFromType(DataType.TEMPERATURE);
+        double max = pa.getMax();
+        double min = pa.getMin();
+
+        System.out.println("Max : "+max+" °C, Min: "+min+" °C");
+        StationWatcher stationWatcher = station.getStationWatcher(this);
+        stationWatcher.startWatching();
+
+        System.out.println("Started station watcher");
+    }
+    @Override
+    public void receiveStationLatestMeasurements(LatestMeasurements latestMeasurements) {
+        System.out.println("New Humidity  "+latestMeasurements.getHumidity().getValue());
+    }
+
+    @Override
+    public void receiveStationLatestHardwareReport(String latestHardwareReport) {
+        System.out.println("New hardware report is "+latestHardwareReport.length()+" char long");
     }
 }

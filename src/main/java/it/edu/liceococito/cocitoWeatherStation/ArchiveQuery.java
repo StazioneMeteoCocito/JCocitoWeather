@@ -34,7 +34,7 @@ public class ArchiveQuery {
     private final int defaultPageSize = 100;
     public ArrayList<DataType> allowedDataTypes;
     public ArrayList<TimePeriod> timePeriods;
-    private int pageSize = 0;
+    private int pageSize;
 
     /**
      * Create the archive query
@@ -48,6 +48,7 @@ public class ArchiveQuery {
 
     /**
      * Get the allowed types list
+     *
      * @return Arraylist of allowed types
      */
     public ArrayList<DataType> getAllowedDataTypes() {
@@ -56,6 +57,7 @@ public class ArchiveQuery {
 
     /**
      * Set the allowed types list
+     *
      * @param allowedDataTypes list of allowed types
      */
     public void setAllowedDataTypes(ArrayList<DataType> allowedDataTypes) {
@@ -64,6 +66,7 @@ public class ArchiveQuery {
 
     /**
      * Gets time Period domain list
+     *
      * @return Arraylist of time periods
      */
     public ArrayList<TimePeriod> getTimePeriods() {
@@ -72,6 +75,7 @@ public class ArchiveQuery {
 
     /**
      * Set time Period domain list
+     *
      * @param timePeriods Arraylist of time periods
      */
     public void setTimePeriods(ArrayList<TimePeriod> timePeriods) {
@@ -80,6 +84,7 @@ public class ArchiveQuery {
 
     /**
      * Get pagination page size
+     *
      * @return item number in a page
      */
     public int getPageSize() {
@@ -88,6 +93,7 @@ public class ArchiveQuery {
 
     /**
      * Set pagination page size
+     *
      * @param pageSize items in a page
      */
     public void setPageSize(int pageSize) {
@@ -95,7 +101,8 @@ public class ArchiveQuery {
     }
 
     /**
-     *  Alias of {@code setPageSize(0)}
+     * Alias of {@code setPageSize(0)}
+     *
      * @see it.edu.liceococito.cocitoWeatherStation.ArchiveQuery#setPageSize(int)
      */
     public void disablePagination() {

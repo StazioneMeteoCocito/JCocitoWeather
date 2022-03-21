@@ -40,11 +40,12 @@ public class Value {
 
     /**
      * A value data point
-     * @param created Data point generation instant
-     * @param file File containing the data point
+     *
+     * @param created  Data point generation instant
+     * @param file     File containing the data point
      * @param fileLine Line of the source file containing the data point
-     * @param value Data point value
-     * @param type Type of data point
+     * @param value    Data point value
+     * @param type     Type of data point
      */
     public Value(Instant created, File file, int fileLine, double value, DataType type) {
         this.created = created;
@@ -56,27 +57,34 @@ public class Value {
 
     /**
      * Get the file containing the data point
+     *
      * @return File
      */
     public File getFile() {
         return file;
     }
+
     /**
      * Get the line of the source file containing the data point
+     *
      * @return line
      */
     public int getFileLine() {
         return fileLine;
     }
+
     /**
      * Get the data point generation instant
+     *
      * @return generation isntant
      */
     public Instant getCreated() {
         return created;
     }
+
     /**
      * Get the data point value
+     *
      * @return value
      */
     public double getValue() {
@@ -85,6 +93,7 @@ public class Value {
 
     /**
      * Get the data point type
+     *
      * @return data type
      */
     public DataType getType() {

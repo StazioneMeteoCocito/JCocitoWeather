@@ -24,6 +24,7 @@
  */
 
 package it.edu.liceococito.cocitoWeatherStation;
+
 /**
  * The git repository has already been inited4
  */

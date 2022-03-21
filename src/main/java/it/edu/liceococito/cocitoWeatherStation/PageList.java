@@ -34,7 +34,7 @@ public class PageList extends ArrayList<Page> {
     /**
      * Build list of pages
      */
-    public PageList(){
+    public PageList() {
         super();
     }
 }

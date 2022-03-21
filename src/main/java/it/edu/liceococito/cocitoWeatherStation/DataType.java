@@ -44,11 +44,12 @@ public enum DataType {
 
     /**
      * Enum datatype constructor
-     * @param italianName name in italian
-     * @param englishName name in english
-     * @param symbol symbol
+     *
+     * @param italianName       name in italian
+     * @param englishName       name in english
+     * @param symbol            symbol
      * @param unitOfMeasurement unit
-     * @param csvName csv file name without extension
+     * @param csvName           csv file name without extension
      */
     DataType(String italianName, String englishName, String symbol, String unitOfMeasurement, String csvName) {
         this.italianName = italianName;
@@ -60,34 +61,43 @@ public enum DataType {
 
     /**
      * Get name italian name of data type
+     *
      * @return italian name
      */
     public String getItalianName() {
         return italianName;
     }
+
     /**
      * Get name english name of data type
+     *
      * @return english name
      */
     public String getEnglishName() {
         return englishName;
     }
+
     /**
      * Get symbol of data type
+     *
      * @return symbol
      */
     public String getSymbol() {
         return symbol;
     }
+
     /**
      * Get unit of measurement of data type
+     *
      * @return unit of measurement
      */
     public String getUnitOfMeasurement() {
         return unitOfMeasurement;
     }
+
     /**
      * Get csv data type filename without extension
+     *
      * @return filename without extension
      */
     public String getCsvName() {

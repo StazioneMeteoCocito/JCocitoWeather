@@ -32,68 +32,98 @@ import java.time.Instant;
  * Stores latest measurements
  */
 public class LatestMeasurements {
-    /**
-     * Get temperature value
-     * @return temperature
-     */
-    public Value getTemperature() {
-        return temperature;
-    }
-    /**
-     * Get humidity value
-     * @return humidity
-     */
-    public Value getHumidity() {
-        return humidity;
-    }
-    /**
-     * Get pressure value
-     * @return pressure
-     */
-    public Value getPressure() {
-        return pressure;
-    }
-    /**
-     * Get PM10 value
-     * @return PM10
-     */
-    public Value getPm10() {
-        return pm10;
-    }
-    /**
-     * Get PM25 value
-     * @return pm25
-     */
-    public Value getPm25() {
-        return pm25;
-    }
-    /**
-     * Get smoke and flammable vapours value
-     * @return smoke and flammable vapours
-     */
-    public Value getSmokeAndFlammableGases() {
-        return smokeAndFlammableGases;
-    }
-
     private final Value temperature;
     private final Value humidity;
     private final Value pressure;
     private final Value pm10;
     private final Value pm25;
     private final File jsonFile;
+    private final Value smokeAndFlammableGases;
+    private final Instant instant;
 
     /**
      * Build latest measurements holder
      */
-     LatestMeasurements(double temperature, double humidity, double pressure, double pm10, Double pm25, double smokeAndFlammableGases, String filePath, Instant latest) {
+    LatestMeasurements(double temperature, double humidity, double pressure, double pm10, Double pm25, double smokeAndFlammableGases, String filePath, Instant latest) {
         this.jsonFile = new File(filePath);
-        this.temperature = new Value(latest,jsonFile,1,temperature,DataType.TEMPERATURE);
-        this.humidity = new Value(latest,jsonFile,2,humidity,DataType.HUMIDITY);
-        this.pressure = new Value(latest,jsonFile,3,pressure,DataType.PRESSURE);
-        this.pm10 = new Value(latest,jsonFile,4,pm10,DataType.PM10);
-        this.pm25 = new Value(latest,jsonFile,5,pm25,DataType.PM25);
-        this.smokeAndFlammableGases = new Value(latest,jsonFile,6,smokeAndFlammableGases,DataType.SMOKE_AND_FLAMMABLE_VAPOURS);
+        this.instant = latest;
+        this.temperature = new Value(latest, jsonFile, 1, temperature, DataType.TEMPERATURE);
+        this.humidity = new Value(latest, jsonFile, 2, humidity, DataType.HUMIDITY);
+        this.pressure = new Value(latest, jsonFile, 3, pressure, DataType.PRESSURE);
+        this.pm10 = new Value(latest, jsonFile, 4, pm10, DataType.PM10);
+        this.pm25 = new Value(latest, jsonFile, 5, pm25, DataType.PM25);
+        this.smokeAndFlammableGases = new Value(latest, jsonFile, 6, smokeAndFlammableGases, DataType.SMOKE_AND_FLAMMABLE_VAPOURS);
     }
 
-    private final Value smokeAndFlammableGases;
+    /**
+     * Get json file
+     *
+     * @return json file
+     */
+    public File getJsonFile() {
+        return jsonFile;
+    }
+
+    /**
+     * Get instant
+     *
+     * @return instant
+     */
+    public Instant getInstant() {
+        return instant;
+    }
+
+    /**
+     * Get temperature value
+     *
+     * @return temperature
+     */
+    public Value getTemperature() {
+        return temperature;
+    }
+
+    /**
+     * Get humidity value
+     *
+     * @return humidity
+     */
+    public Value getHumidity() {
+        return humidity;
+    }
+
+    /**
+     * Get pressure value
+     *
+     * @return pressure
+     */
+    public Value getPressure() {
+        return pressure;
+    }
+
+    /**
+     * Get PM10 value
+     *
+     * @return PM10
+     */
+    public Value getPm10() {
+        return pm10;
+    }
+
+    /**
+     * Get PM25 value
+     *
+     * @return pm25
+     */
+    public Value getPm25() {
+        return pm25;
+    }
+
+    /**
+     * Get smoke and flammable vapours value
+     *
+     * @return smoke and flammable vapours
+     */
+    public Value getSmokeAndFlammableGases() {
+        return smokeAndFlammableGases;
+    }
 }

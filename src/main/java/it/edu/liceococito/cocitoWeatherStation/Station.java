@@ -30,7 +30,6 @@ import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -51,8 +50,8 @@ import java.util.Scanner;
  */
 public class Station {
     private final File archivePath;
+    private final Repository repo;
     private String remoteGitURI;
-    private Repository repo;
 
     /**
      * Construct Archive in local dir {@code "dati"}
@@ -87,13 +86,14 @@ public class Station {
      * @throws GitAPIException        Git error
      */
     public Station(@NotNull File archivePath, boolean createDir) throws NotADirectoryException, IOException, GitAPIException {
-        this(archivePath,createDir,"https://github.com/StazioneMeteoCocito/dati.git");
+        this(archivePath, createDir, "https://github.com/StazioneMeteoCocito/dati.git");
     }
 
     /**
      * Construct Archive in given path with {@code createDir} and {@code remoteGitURI} specified
-     * @param archivePath The Filepath to the dir where to store the git archive
-     * @param createDir   Wether to create the dir if it is not present
+     *
+     * @param archivePath  The Filepath to the dir where to store the git archive
+     * @param createDir    Wether to create the dir if it is not present
      * @param remoteGitURI The remote repository custom url. Ignored if the local archive already exists
      * @throws NotADirectoryException The selected path is not a dir
      * @throws IOException            Could not create the path
@@ -106,6 +106,10 @@ public class Station {
         }
         if (!archivePath.isDirectory()) throw new NotADirectoryException();
         this.archivePath = archivePath;
+        try {
+            this.setRemoteGitURI(remoteGitURI);
+        } catch (ArchiveAlreadyExists ignored) {
+        }
         if (!this.isGitArchive()) {
             try {
                 this.cloneRemoteArchive();
@@ -113,10 +117,7 @@ public class Station {
             }
         }
         this.repo = this.getRepo();
-        try {
-            this.setRemoteGitURI(remoteGitURI);
-        } catch (ArchiveAlreadyExists ignored) {
-        }
+
     }
 
     /**
@@ -131,6 +132,7 @@ public class Station {
     /**
      * Set the remote git uri path
      * used only in constructor, not handleable outside package as in previous snapshot
+     *
      * @param remoteGitURI The remote path
      * @throws ArchiveAlreadyExists The repo has already been inited
      */
@@ -188,7 +190,6 @@ public class Station {
     }
 
     /**
-     *
      * @param aq Obtain all the files involved in a query and the datatype associated
      * @return a file desciptor list
      * @see it.edu.liceococito.cocitoWeatherStation.DataType
@@ -196,7 +197,7 @@ public class Station {
      */
     private @NotNull ArrayList<InternalFileDescriptor> queryFiles(ArchiveQuery aq) {
         ArrayList<InternalFileDescriptor> fl = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale( Locale.ITALIAN )
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ITALIAN)
                 .withZone(ZoneId.of("Europe/Rome"));
         ArrayList<TimePeriod> tps = aq.getTimePeriods();
         ArrayList<DataType> adts = aq.getAllowedDataTypes();
@@ -209,7 +210,7 @@ public class Station {
                 while (start.compareTo(end) < 0) {
                     String path = Paths.get(this.repo.getDirectory().getAbsolutePath()).getParent().getFileName() + File.separator + formatter.format(start).replaceAll("-", File.separator) + File.separator + adts.get(i).getCsvName() + ".csv";
                     a = new File(path);
-                    if (a.exists()) fl.add(new InternalFileDescriptor(a,adts.get(i)));
+                    if (a.exists()) fl.add(new InternalFileDescriptor(a, adts.get(i)));
                     start = start.plus(1, ChronoUnit.DAYS);
                 }
             }
@@ -219,21 +220,20 @@ public class Station {
 
     /**
      * Execute a query on the archive
+     *
      * @param archiveQuery the query to execute
      * @return the result of the query
      * @throws IOException Input/output error
-     * @see it.edu.liceococito.cocitoWeatherStation.ArchiveQuery
-     * @see it.edu.liceococito.cocitoWeatherStation.ArchiveQueryResult
      */
     public ArchiveQueryResult query(ArchiveQuery archiveQuery) throws IOException {
         ArrayList<InternalFileDescriptor> files = this.queryFiles(archiveQuery);
         PageList pages = new PageList();
-        DateTimeFormatter valFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withLocale( Locale.ITALIAN )
-                .withZone( ZoneId.systemDefault() );
+        DateTimeFormatter valFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withLocale(Locale.ITALIAN)
+                .withZone(ZoneId.systemDefault());
         Page page = new Page();
         int lineN;
         String line;
-        for (int i=0; i<files.size(); i++) {
+        for (int i = 0; i < files.size(); i++) {
             File f = files.get(i).getF();
             BufferedReader br = new BufferedReader(new FileReader(f));
             lineN = 0;
@@ -242,15 +242,15 @@ public class Station {
                 String[] csvLine = line.split(",");    // use comma as separator
                 if (csvLine.length < 2) continue;
                 Instant instant = LocalDateTime.parse(csvLine[0], valFormatter).atZone(ZoneId.of("Europe/Rome")).toInstant();
-                page.add(new Value(instant,f,lineN,Double.parseDouble(csvLine[1]),files.get(i).getDt()));
-                if (lineN * (i+1) % archiveQuery.getPageSize() == 0 && lineN * (i+1) != 0 && archiveQuery.getPageSize()!=0) {
+                page.add(new Value(instant, f, lineN, Double.parseDouble(csvLine[1]), files.get(i).getDt()));
+                if (lineN * (i + 1) % archiveQuery.getPageSize() == 0 && lineN * (i + 1) != 0 && archiveQuery.getPageSize() != 0) {
                     pages.add(page);
                     page = new Page();
                 }
                 lineN++;
             }
         }
-        if(archiveQuery.getPageSize()==0){
+        if (archiveQuery.getPageSize() == 0) {
             pages.add(page);
         }
         return new ArchiveQueryResult(pages, Instant.now());
@@ -258,8 +258,9 @@ public class Station {
 
     /**
      * Update the local archive with the freshest data
+     *
      * @return Operation success status
-     * @throws IOException Input/Output error
+     * @throws IOException     Input/Output error
      * @throws GitAPIException Git error
      */
     public boolean udpate() throws IOException, GitAPIException {
@@ -273,12 +274,13 @@ public class Station {
 
     /**
      * Get lastest hardware report from archive
+     *
      * @return hardware report string
      * @throws IOException Error reading the file
      */
     public String getHardwareReport() throws IOException {
-        String hrp = Paths.get(this.repo.getDirectory().getAbsolutePath()).getParent().getFileName()+File.separator+"report.txt";
-        Scanner scanner = new Scanner( new File(hrp) );
+        String hrp = Paths.get(this.repo.getDirectory().getAbsolutePath()).getParent().getFileName() + File.separator + "report.txt";
+        Scanner scanner = new Scanner(new File(hrp));
         String text = scanner.useDelimiter("\\A").next();
         scanner.close();
         return text;
@@ -286,12 +288,13 @@ public class Station {
 
     /**
      * Get lastest measurements
+     *
      * @return Latest measurements holder object
-     * @throws IOException I/O error
+     * @throws IOException    I/O error
      * @throws ParseException JSON error
      */
     public LatestMeasurements getLastMeasurements() throws IOException, ParseException {
-        String lastPath = Paths.get(this.repo.getDirectory().getAbsolutePath()).getParent().getFileName()+File.separator+"last.json";
+        String lastPath = Paths.get(this.repo.getDirectory().getAbsolutePath()).getParent().getFileName() + File.separator + "last.json";
         JSONParser parser = new JSONParser();
         JSONObject a = (JSONObject) parser.parse(new FileReader(lastPath));
         Instant i = Instant.parse((String) a.get("utciso"));
@@ -301,6 +304,27 @@ public class Station {
         double PM10 = ((Number) a.get("PM10")).doubleValue();
         double PM25 = ((Number) a.get("PM25")).doubleValue();
         double S = ((Number) a.get("S")).doubleValue();
-        return new LatestMeasurements(T,H,P,PM10,PM25,S,lastPath,i);
+        return new LatestMeasurements(T, H, P, PM10, PM25, S, lastPath, i);
+    }
+
+    /**
+     * Get station watcher with 1 min polling interval (default)
+     *
+     * @param stationEventListener The event listener
+     * @return station watcher
+     */
+    public StationWatcher getStationWatcher(StationEventListener stationEventListener) {
+        return new StationWatcher(this, 60, stationEventListener);
+    }
+
+    /**
+     * Get station watcher with custom polling interval
+     *
+     * @param stationEventListener  The event listener
+     * @param secondsBetweenUpdated polling interval
+     * @return watcher
+     */
+    public StationWatcher getStationWatcher(StationEventListener stationEventListener, int secondsBetweenUpdated) {
+        return new StationWatcher(this, secondsBetweenUpdated, stationEventListener);
     }
 }

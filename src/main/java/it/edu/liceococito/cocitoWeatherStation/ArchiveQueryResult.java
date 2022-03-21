@@ -32,10 +32,24 @@ import java.time.Instant;
  * A result of an archive query
  */
 public class ArchiveQueryResult {
+    private final PageList pageList;
+    private final Instant computedInstant;
+
+    /**
+     * Construct the result
+     *
+     * @param pageList        list of pages
+     * @param computedInstant execution ended at this instant
+     */
+    ArchiveQueryResult(PageList pageList, Instant computedInstant) { // package
+        this.pageList = pageList;
+        this.computedInstant = computedInstant;
+    }
+
     /**
      * Get a {@code PageList} of pages with results
+     *
      * @return {@code PageList} list of pages
-     * @see it.edu.liceococito.cocitoWeatherStation.PageList
      */
     public PageList getPageList() {
         return pageList;
@@ -43,23 +57,11 @@ public class ArchiveQueryResult {
 
     /**
      * Get Instant at which the query execution was completed
+     *
      * @return the instant
      */
     public Instant getComputedInstant() {
         return computedInstant;
-    }
-
-    private PageList pageList;
-    private Instant computedInstant;
-
-    /**
-     * Construct the result
-     * @param pageList list of pages
-     * @param computedInstant execution ended at this instant
-     */
-    ArchiveQueryResult(PageList pageList, Instant computedInstant){ // package
-        this.pageList = pageList;
-        this.computedInstant = computedInstant;
     }
 
 

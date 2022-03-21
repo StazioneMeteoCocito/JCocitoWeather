@@ -31,8 +31,23 @@ import java.io.File;
  * File desciptor with file and datatype
  */
 class InternalFileDescriptor {
+    private File f;
+    private DataType dt;
+
+    /**
+     * Build file descriptor
+     *
+     * @param f  file
+     * @param dt data type
+     */
+    public InternalFileDescriptor(File f, DataType dt) {
+        this.f = f;
+        this.dt = dt;
+    }
+
     /**
      * Get file
+     *
      * @return file
      */
     public File getF() {
@@ -41,6 +56,7 @@ class InternalFileDescriptor {
 
     /**
      * Set file
+     *
      * @param f file
      */
     public void setF(File f) {
@@ -49,6 +65,7 @@ class InternalFileDescriptor {
 
     /**
      * Get data type
+     *
      * @return data Type
      */
     public DataType getDt() {
@@ -57,23 +74,11 @@ class InternalFileDescriptor {
 
     /**
      * SEt data type
+     *
      * @param dt data type
      */
     public void setDt(DataType dt) {
         this.dt = dt;
     }
-
-    /**
-     * Build file descriptor
-     * @param f file
-     * @param dt data type
-     */
-    public InternalFileDescriptor(File f, DataType dt) {
-        this.f = f;
-        this.dt = dt;
-    }
-
-    private File f;
-    private DataType dt;
 
 }

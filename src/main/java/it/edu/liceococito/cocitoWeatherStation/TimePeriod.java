@@ -39,8 +39,9 @@ public class TimePeriod {
 
     /**
      * Time period given two instants
+     *
      * @param start start instant
-     * @param end end instant
+     * @param end   end instant
      */
     public TimePeriod(Instant start, Instant end) {
         this.start = start;
@@ -49,8 +50,8 @@ public class TimePeriod {
 
     /**
      * Time period given Recent Time period
+     *
      * @param rtp recent time period
-     * @see it.edu.liceococito.cocitoWeatherStation.RecentTimePeriod
      */
     public TimePeriod(RecentTimePeriod rtp) {
         if (rtp.equals(RecentTimePeriod.TODAY)) {
@@ -97,6 +98,7 @@ public class TimePeriod {
 
     /**
      * Get start of time peridod
+     *
      * @return start instant
      */
     public Instant getStart() {
@@ -105,6 +107,7 @@ public class TimePeriod {
 
     /**
      * Set start of time period
+     *
      * @param start start instant
      */
     public void setStart(Instant start) {
@@ -113,6 +116,7 @@ public class TimePeriod {
 
     /**
      * Get end of time period
+     *
      * @return end instant
      */
     public Instant getEnd() {
@@ -121,6 +125,7 @@ public class TimePeriod {
 
     /**
      * Set end of time period
+     *
      * @param end end instant
      */
     public void setEnd(Instant end) {
@@ -129,6 +134,7 @@ public class TimePeriod {
 
     /**
      * Get Day Of week from instant
+     *
      * @param i Instant
      * @return day of weeek
      */

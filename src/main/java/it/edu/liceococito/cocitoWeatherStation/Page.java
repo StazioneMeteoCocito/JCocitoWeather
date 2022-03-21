@@ -34,7 +34,7 @@ public class Page extends ArrayList<Value> {
     /**
      * Build page
      */
-    public Page(){
+    public Page() {
         super();
     }
 }
