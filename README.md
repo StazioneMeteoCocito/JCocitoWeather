@@ -17,8 +17,8 @@ public class Main implements StationEventListener {
         station.udpate();
         ArchiveQuery aq = new ArchiveQuery();
         TimePeriod tp = new TimePeriod();
-        aq.allowedDataTypes.add(DataType.TEMPERATURE);
-        aq.timePeriods.add(tp);
+        aq.getAllowedDataTypes().add(DataType.TEMPERATURE);
+        aq.getTimePeriods().add(tp);
         aq.setPageSize(10);
         ArchiveQueryResult aqs = station.query(aq);
         PageList pgl = aqs.getPageList();

@@ -32,9 +32,11 @@ import java.util.ArrayList;
  */
 public class ArchiveQuery {
     private final int defaultPageSize = 100;
-    public ArrayList<DataType> allowedDataTypes;
-    public ArrayList<TimePeriod> timePeriods;
+    private ArrayList<DataType> allowedDataTypes;
+    private ArrayList<TimePeriod> timePeriods;
     private int pageSize;
+
+
 
     /**
      * Create the archive query
